@@ -1,0 +1,33 @@
+import { test, expect } from "@playwright/test";
+test.describe("SauceDemo", () => {
+  test("can login and logout", async ({ page }) => {
+    await page.goto("https://www.saucedemo.com/");
+    await page.fill('#user-name', 'standard_user');
+    await page.fill('#password', 'secret_sauce');
+    await page.click('#login-button');
+    await page.selectOption('.product_sort_container', 'hilo');
+    const firstProductPrice = await page.getByText('.inventory_item_price:nth-of-type(1)');
+    console.log('First Product Price:', firstProductPrice);
+    const secondProductPrice = await page.getByText('.inventory_item_price:nth-of-type(2)');
+    console.log('Second Product Price:', secondProductPrice);
+    const addToCartButtons = await page.$$('.inventory_item .btn_inventory');
+    await addToCartButtons[0].click();
+    await addToCartButtons[1].click();
+    await page.click('.shopping_cart_link');
+    await page.click('#checkout');
+    await page.fill('#first-name', 'John');
+    await page.fill('#last-name', 'Doe');
+    await page.fill('#postal-code', '12345');
+    await page.click('#continue');
+    const itemTotal = await page.textContent('.summary_subtotal_label');
+    //console.log('Item Total:', itemTotal);
+    const tax = await page.textContent('.summary_tax_label');
+    console.log('Tax:', tax);
+    const total = await page.textContent('.summary_total_label');
+    console.log('Total:', total);
+    await page.click('#finish');
+    await page.click('#back-to-products');
+    await page.click('#react-burger-menu-btn');
+    await page.click('#logout_sidebar_link');
+  });
+});
